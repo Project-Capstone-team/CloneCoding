@@ -288,9 +288,12 @@ body{
     cursor: pointer; /* 누를 수 있도록 하기 위함 */
 }
 
+
 .heart_btn.on .sprite_heart_icon_outline{ /* on 클래스가 추가된 경우 이미지를 변경 */
     background: url('../imgs/background01.png') no-repeat -26px -261px;
 }
+
+
 
 .contents .likes{
     padding: 5px 20px;
@@ -436,6 +439,7 @@ body{
     overflow-y: auto; /* 자동으로 스크롤을 보여주거나 숨김 */
     /*overflow:hidden auto; */ /* x축, y축 한번에 설정 */
 
+
 }
 
 .hidden_menu{
@@ -530,6 +534,8 @@ body{
     .hidden_menu{
         width: 95%;
     }
+
+
 
 
 }
