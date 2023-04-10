@@ -287,6 +287,25 @@ body{
     font-size: 12px;
 }
 
+.contents .sprite_more_icon.on .toggle_box{
+    display: block;
+}
+
+.contents .toggle_box{
+    text-align: center; /* 중앙 정렬 */
+    position: absolute; /* 가장 가까운 부모 요소를 기준으로 배치 */
+    height: 0;
+    top: 20px;
+    border: 1px solid rgba(0,0,0,0.09);
+    border-radius: 3px;
+    display: none; /* 해당 공간 -> 화면상에 존재 X */
+}
+
+.contents .toggle_box > li{
+    padding: 5px 10px;
+    background: #fff;
+}
+
 .contents .img_section{
     overflow: hidden; /* 자식이 부모의 크기를 넘지 않도록 한다 */
 }
@@ -295,6 +314,10 @@ body{
     width: 100%; /* 부모의 크기를 100%로 받는다 */
 }
 
+.contents .toggle_box > li input{
+    border: none;
+    font-size: inherit;
+}
 .contents .bottom_icons{
     display: flex;  /* 가로 배치 */
     justify-content: space-between; /* x축 정렬_공간을 자동으로 분배함 */ 
@@ -322,15 +345,20 @@ body{
 }
 
 .contents .comment_container{
-    display:flex; /* 가로 배치 */
+    display: flex; /* 가로 배치 */
     justify-content: space-between;
     align-items: center;
     padding: 5px 20px;
 }
+
 .contents .comment_container .comment{
-    display:flex; /* 가로 배치 */
-    /* flex-direction: column; 원래코드 */
+    display: flex; /* 가로 배치 */
+    flex-direction: column;
     font-size: 14px;
+}
+
+.contents .comment_container .comment-detail{
+    display: flex; /* 가로 배치 */
 }
 
 .contents .comment_container .comment .nick_name{
@@ -377,7 +405,7 @@ body{
     top: 50%;
     transform: translateY(-50%); /* y축으로 중앙 정렬 */
     cursor: pointer;
-    pointer-events: none; /* 처음에는 클릭이 되지 않도록 한다 */
+    /* pointer-events: none; /* 처음에는 클릭이 되지 않도록 한다 */
     opacity: 0.6;
 }
 
