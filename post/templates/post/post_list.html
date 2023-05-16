@@ -8,175 +8,198 @@
 
 <!-- main -->
 <section id="main_container">
-        <div class="inner">
-            <div class="contents_box">
-                {% for post in posts %}
-                <article class="contents">
-                    <header class="top">
-                        <div class="user_container">
-                            <div class="profile_img">
-                                <!-- 포스트 저자의 프로필 사진이 있다면 -->
-                                {% if post.author.profile.picture %}
-                                <!-- 이미지 주소는 포스트 저자 프로필 사진의 URL -->
-                                <img src="{{ post.author.profile.picture.url }}" alt="프로필이미지">
-                                <!-- 포스트 저자의 프로필 사진이 없다면 -->
-                                {% else %}
-                                <!-- 기본 이미지 -->
-                                <img src="{% static 'imgs/thumb.jpeg'%}" alt="프로필이미지">
-                                {% endif %}
-                            </div>
-                            
-                            <div class="user_name">
-                                <div class="nick_name m_text">
-                                    <!--포스트 저자 프로필의 닉네임-->
-                                    {{ post.author.profile.nickname }}
-                                </div>
-                                <div class="country s_text">Seoul, South Korea</div>
-                            </div>                    
-
-                         <div class="sprite_more_icon" data-name="more">
-                                <ul class="toggle_box">
-                                    <li><input type="submit" class="follow" value="팔로우" data-name="follow"></li>
-                                    <li>수정</li>
-                                    <li>삭제</li>
-                                </ul>
-                            </div>
-                        </header>
-
-                        <div class="img_section">
-                            <div class="trans_inner">
-                                <div>
-                                    <img src="{{ post.photo.url }}" alt="visual01">
-                                </div>
-                            </div>
-                        </div>
-
-                        <!-- 하단 아이콘 -->
-                        <div class="bottom_icons">
-                            <div class="left_icons">
-                                <div class="heart_btn">
-                                    <div class="sprite_heart_icon_outline" name="39" data-name="heartbeat"></div>
-                                </div>
-                                <div class="sprite_bubble_icon"></div>
-                                <div class="sprite_share_icon" data-name="share"></div>
-                            </div>
-                            <div class="right_icon">
-                                <div class="sprite_bookmark_outline" name="37" data-name="bookmark"></div>
-                            </div>
-                        </div>
-
-                        <!-- 좋아요 -->
-                        <div class="likes m_text">
-                            좋아요
-                            <span id="like-count-39">7,777</span>
-                            <span id="bookmark-count-39"></span>
-                            개
-                        </div>
-
-                        <!-- 게시물 댓글창 -->
-                        <div class="comment_container">
-                            <div class="comment" id="comment-list-ajax-post37">
-                                <div class="comment-detail">
-                                    <div class="nick_name m_text">klklatta_tf</div>
-                                    <div>#경성대 #벚꽃</div>
-                                </div>
-                            </div>
-                            <div class="small_heart">
-                                <div class="sprite_small_heart_icon_outline"></div>
-                            </div>
-                        </div>
-                        
-                        <!-- 댓글달기 -->
-                        <div class="timer">{{ post.created_at|timesince }}</div>
-                        <div class="comment_cnt">댓글 24개 모두 보기</div>
-                        <div class="comment_field" id="add-comment-post37">
-                            <input type="text" placeholder="댓글달기...">
-                            <div class="upload_btn m_text" data-name="comment">게시</div>
-                        </div>
-                    </article>
-                    {% endfor %}
-                </div>
-
-                <input type="hidden" id="page" value="1">
-
-                <!-- 사이드 바 -->
-                <div class="side_box">
-                    <div class="user_profile">
-                        <div class="profile_thumb">
-                            {% if user_profile and user_profile.picture %}
-                            <img src="{{ user_profile.picture.url }}" alt="프로필사진">
+    <div class="inner">
+        <div class="contents_box">
+            {% for post in posts %}
+            <article class="contents">
+                <header class="top">
+                    <div class="user_container">
+                        <div class="profile_img">
+                            <!-- 포스트 저자의 프로필 사진이 있다면 -->
+                            {% if post.author.profile.picture %}
+                            <!-- 이미지 주소는 포스트 저자 프로필 사진의 URL -->
+                            <img src="{{ post.author.profile.picture.url }}" alt="프로필이미지">
+                            <!-- 포스트 저자의 프로필 사진이 없다면 -->
                             {% else %}
-                            <img src="{% static 'imgs/thumb.jpeg' %}" alt="프로필사진">
+                            <!-- 기본 이미지 -->
+                            <img src="{% static 'imgs/thumb.jpeg'%}" alt="프로필이미지">
                             {% endif %}
                         </div>
-                        <div class="detail">
-                            {% if user_profile %}
-                            <div class="id m_text">{{ user_profile.user }}</div>
-                            <div class="ko_name">{{ user_profile.nickname }}</div>
-                            {% endif %}
+
+                        <div class="user_name">
+                            <div class="nick_name m_text">
+                                <!--포스트 저자 프로필의 닉네임-->
+                                {{ post.author.profile.nickname }}
+                                {{ post.id }}
+                            </div>
+                            <div class="country s_text">Seoul, South Korea</div>
+                        </div>
+
+                        <div class="sprite_more_icon" data-name="more">
+                            <ul class="toggle_box">
+                                <li><input type="submit" class="follow" value="팔로우" data-name="follow"></li>
+                                <li>수정</li>
+                                <li>삭제</li>
+                            </ul>
+                        </div>
+                        <div>
+                            <form action="{% url 'post:post_delete' post.pk %}" method="post">
+                                {% csrf_token %}
+                                <input type="submit" value="삭제">
+                            </form>
+                        </div> 
+                    </div>
+                </header>
+
+                <div class="img_section">
+                    <div class="trans_inner">
+                        <div>
+                            <img src="{{ post.photo.url }}" alt="visual01">
                         </div>
                     </div>
-                    <br>
-                    <!-- 스토리 바 -->
-                    <article class="story">
-                        <header class="story_header">
-                            <div>스토리</div>
-                            <div class="more">모두 보기</div>
-                        </header>
+                </div>
 
-                        <div class="scroll_inner">
-                            <div class="thumb_user">
-                                <div class="profile_thumb">
-                                    <img src="imgs/ire.png" alt="프로필사진">
-                                </div>
-
-                                <div class="detail">
-                                    <div class="id">dlfpire</div>
-                                    <div class="time">30분 전</div>
-                                </div>
-                            </div>
-                            <div class="thumb_user">
-                                <div class="profile_thumb">
-                                    <img src="imgs/minse.png" alt="프로필사진">
-                                </div>
-
-                                <div class="detail">
-                                    <div class="id">minse._.k</div>
-                                    <div class="time">1시간 전</div>
-                                </div>
-                            </div>
-                            <div class="thumb_user">
-                                <div class="profile_thumb">
-                                    <img src="imgs/gain.jpg" alt="프로필사진">
-                                </div>
-
-                                <div class="detail">
-                                    <div class="id">uga_0.0</div>
-                                    <div class="time">활동 중</div>
-                                </div>
-                            </div>
-                            <div class="thumb_user">
-                                <div class="profile_thumb">
-                                    <img src="imgs/hyunsu.png" alt="프로필사진">
-                                </div>
-                                
-                                <div class="detail">
-                                    <div class="id">hslyrical</div>
-                                    <div class="time">3시간 전</div>
-                                </div>
-                            </div>
+                <!-- 하단 아이콘 -->
+                <div class="bottom_icons">
+                    <div class="left_icons">
+                        <div class="heart_btn">
+                            {% if user in post.like_user_set.all %}
+                            <div class="sprite_heart_icon_outline on" name="{{ post.id }}" data-name="heartbeat"></div>
+                            {% else %}
+                            <div class="sprite_heart_icon_outline" data-name="{{ post.id }}" data-name="heartbeat"></div>
+                            {% endif %}
                         </div>
-                    </article>
-                    
-                    <!-- 추천 바 -->
-                    <article class="recommend">
-                        <header class="reco_header">
-                            <div>회원님을 위한 추천</div>
-                            <div class="more">모두 보기</div>
-                        </header>
-                    </article>
-            </div>
-        </div>
-    </section>
+                        <div class="sprite_bubble_icon"></div>
+                        <div class="sprite_share_icon" data-name="share"></div>
+                    </div>
 
+                    <div class="right_icon">
+                        {% if user in post.bookmark_user_set.all %}
+                        <div class="sprite_bookmark_outline on" data-name="{{ post.id }}" data-name="bookmark"></div>
+                        {% else %}
+                        <div class="sprite_bookmark_outline" name="{{ post.id }}" data-name="bookmark"></div>
+                        {% endif %}
+                    </div>
+                </div>
+
+                <!-- 좋아요 -->
+                <div class="likes m_text">
+                    <span id="like-count-{{ post.id }}">좋아요 {{ post.like_count }}개</span>
+                    <span id="bookmark-count-{{ post.id }}">북마크 {{ post.bookmark_count }} 개</span>
+                </div>
+
+                <!-- 게시물 댓글창 -->
+                <div class="comment_container">
+                    <div class="comment" id="comment-list-ajax-post{{post.id}}">
+                        {% for comment in post.comment_set.all %}
+                        <div class="comment-detail" id="comment{{ post.id }}">
+                            <div class="nick_name m_text">{{ comment.author.profile.nickname }}</div>
+                            <div>{{ comment.comment }}</div>
+                            {% if user == comment.author %}
+                            <input type="button" class="del-comment" data-name="comment_delete" value="삭제" name="{{ comment.id }}">
+                            {% endif %}
+                        </div>
+                        {% endfor %}
+                    </div>
+                    <div class="small_heart">
+                        <div class="sprite_small_heart_icon_outline"></div>
+                    </div>
+                </div>
+
+                <!-- 댓글달기 -->
+                <div class="timer">{{ post.created_at|timesince }}</div>
+                <div class="comment_cnt">댓글 24개 모두 보기</div>
+                <div class="comment_field" id="add-comment-post{{ post.id }}">
+                    {% if user.is_authenticated %}
+                    {{ comment_form }}
+                    <div class="upload_btn m_text" data-name="{{ post.id }}" data-name="comment" onclick="alert('댓글을 작성하려면 로그인이 필요합니다.')">게시</div>
+                    {% endif %}
+                </div>
+            </article>
+            {% endfor %}
+        </div>
+
+        <input type="hidden" id="page" value="1">
+
+        <!-- 사이드 바 -->
+        <div class="side_box">
+            <div class="user_profile">
+                <div class="profile_thumb">
+                    {% if user_profile and user_profile.picture %}
+                    <img src="{{ user_profile.picture.url }}" alt="프로필사진">
+                    {% else %}
+                    <img src="{% static 'imgs/thumb.jpeg' %}" alt="프로필사진">
+                    {% endif %}
+                </div>
+                <div class="detail">
+                    {% if user_profile %}
+                    <div class="id m_text">{{ user_profile.user }}</div>
+                    <div class="ko_name">{{ user_profile.nickname }}</div>
+                    {% endif %}
+                </div>
+            </div>
+            <br>
+            <!-- 스토리 바 -->
+            <article class="story">
+                <header class="story_header">
+                    <div>스토리</div>
+                    <div class="more">모두 보기</div>
+                </header>
+
+                <div class="scroll_inner">
+                    <div class="thumb_user">
+                        <div class="profile_thumb">
+                            <img src="imgs/ire.png" alt="프로필사진">
+                        </div>
+
+                        <div class="detail">
+                            <div class="id">dlfpire</div>
+                            <div class="time">30분 전</div>
+                        </div>
+                    </div>
+                    <div class="thumb_user">
+                        <div class="profile_thumb">
+                            <img src="imgs/minse.png" alt="프로필사진">
+                        </div>
+
+                        <div class="detail">
+                            <div class="id">minse._.k</div>
+                            <div class="time">1시간 전</div>
+                        </div>
+                    </div>
+                    <div class="thumb_user">
+                        <div class="profile_thumb">
+                            <img src="imgs/gain.jpg" alt="프로필사진">
+                        </div>
+
+                        <div class="detail">
+                            <div class="id">uga_0.0</div>
+                            <div class="time">활동 중</div>
+                        </div>
+                    </div>
+                    <div class="thumb_user">
+                        <div class="profile_thumb">
+                            <img src="imgs/hyunsu.png" alt="프로필사진">
+                        </div>
+
+                        <div class="detail">
+                            <div class="id">hslyrical</div>
+                            <div class="time">3시간 전</div>
+                        </div>
+                    </div>
+                </div>
+            </article>
+
+            <!-- 추천 바 -->
+            <article class="recommend">
+                <header class="reco_header">
+                    <div>회원님을 위한 추천</div>
+                    <div class="more">모두 보기</div>
+                </header>
+            </article>
+        </div>
+    </div>
+</section>
+
+{% include "post/script_ajax.html" %}
 {% endblock %}
