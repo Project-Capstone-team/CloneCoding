@@ -5,7 +5,29 @@
 {% endblock %}
 
 {% block content %}
-
+<!-- hidden -->
+{% if user.profile.get_following %}
+<div class="hidden_menu">
+    <div class="scroll_inner">
+        {% for following in user.profile.get_following %}
+        <div class="user">
+            <div class="thumb_img">
+                <img src="{{ following.picture.url }}" alt="">
+            </div>
+            <div class="id">{{ following.nickname }}</div>
+        </div>
+        {% endfor%}
+    </div>
+</div>
+{% else %}
+<div class="hidden_menu">
+    <div class="scroll_inner">
+        <div class="notic">
+            팔로우한 유저가 없습니다 팔로우를 해주세요
+        </div>
+    </div>
+</div>
+{% endif %}
 <!-- main -->
 <section id="main_container">
     <div class="inner">
@@ -37,9 +59,26 @@
 
                         <div class="sprite_more_icon" data-name="more">
                             <ul class="toggle_box">
-                                <li><input type="submit" class="follow" value="팔로우" data-name="follow"></li>
-                                <li>수정</li>
-                                <li>삭제</li>
+                                <li>
+                                    {% if user.profile in post.author.profile.get_follower %}        
+                                    <input type="submit" class="follow" value="팔로잉" data-name="follow" name="{{ post.author.profile.id }}">
+                                    {% else %}
+                                    <input type="submit" class="follow" value="팔로우" data-name="follow" name="{{ post.author.profile.id }}">                                    
+                                    {% endif %}
+                                </li>
+
+                                {% if post.author == user %} 
+                                              
+                                <li>
+                                    <a class="post-edit" href="{% url 'post:post_edit' post.pk %}">수정</a>
+                                </li>
+                                <li>
+                                    <form class="post-delete-form" action="{% url 'post:post_delete' post.pk %}" method="post">
+                                        {% csrf_token %}
+                                        <input type="submit" class="post-delete" value="삭제">
+                                    </form>
+                                </li>
+                                {% endif %}
                             </ul>
                         </div>
                         <div>
@@ -119,7 +158,8 @@
             {% endfor %}
         </div>
 
-        <input type="hidden" id="page" value="1">
+        <div id="post_list_ajax"></div> <!--post를 계속해 추가하는 코드-->
+        <input type="hidden" id="page" value="2">
 
         <!-- 사이드 바 -->
         <div class="side_box">
@@ -139,7 +179,31 @@
                 </div>
             </div>
             <br>
-            <!-- 스토리 바 -->
+            <!-- new 스토리 바 -->
+            <article class="story">
+                <header class="story_header">
+                    <div>스토리</div>
+                    <div class="more">모두 보기</div>
+                </header>
+                
+                <div class="scroll_inner">
+                    {% if follow_post_list %}
+                        {% for post in follow_post_list %}
+                            <div class="thumb_user">
+                                <div class="profile_thumb">
+                                    <img src="{{ post.photo.url }}" alt="프로필사진">
+                                </div>
+                                <div class="detail">
+                                    <div class="id">{{ post.content }}</div>
+                                    <div class="time">{{ post.updated_at|timesince }}</div>
+                                </div>
+                            </div>
+                        {% endfor %}
+                    {% endif %}
+                </div>
+            </article>
+
+            {% comment %} <!-- 스토리 바 -->
             <article class="story">
                 <header class="story_header">
                     <div>스토리</div>
@@ -188,7 +252,7 @@
                         </div>
                     </div>
                 </div>
-            </article>
+            </article> {% endcomment %}
 
             <!-- 추천 바 -->
             <article class="recommend">
@@ -196,6 +260,17 @@
                     <div>회원님을 위한 추천</div>
                     <div class="more">모두 보기</div>
                 </header>
+                {% for post in posts|slice:"2:3" %}
+                <div class="thumb_user">
+                    <div class="profile_thumb">
+                        <img src="{{ post.photo.url }}" alt="프로필사진">
+                    </div>
+                    <div class="detail">
+                        <div class="id">{{ post.content }}</div>
+                        <div class="time">{{ post.updated_at|timesince }}</div>
+                    </div>
+                </div>
+                {% endfor %}
             </article>
         </div>
     </div>

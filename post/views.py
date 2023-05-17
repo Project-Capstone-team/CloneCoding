@@ -10,25 +10,51 @@ from django.http import HttpResponse
 
 # Create your views here.
 
-def post_list(request):
-    posts = Post.objects.all()
+def post_list(request, tag=None):
+    post_list = Post.objects.all()
     
     comment_form = CommentForm()
+    
+    paginator = Paginator(post_list, 3)
+    page_num = request.POST.get('page')
+    
+    try:
+        posts = paginator.page(page_num)
+    except PageNotAnInteger:
+        posts = paginator.page(1)
+    except EmptyPage:
+        posts = paginator.page(paginator.num_pages) 
+        
+    if request.is_ajax():
+        return render(request, 'post/post_list_ajax.html', {
+            'posts': posts,
+            'comment_form': comment_form,
+        })
 
     if request.user.is_authenticated:
         username = request.user
         user = get_object_or_404(get_user_model(), username=username)
         user_profile = user.profile
+        
+        following_set = request.user.profile.get_following
+        following_post_list = Post.objects. filter(author__profile__in=following_set)
+        
         return render(request, 'post/post_list.html', {
             'user_profile': user_profile,
+            'tag': tag,
             'posts': posts,
+            'follow_post_list': following_post_list,
             'comment_form': comment_form,
         })
     else:
-        return render(request, 'post/post_list.html', {   
-            'posts': posts,
+        return render(request, 'post/post_list.html', {
+            'user_profile': user_profile,
+            'posts': post_list,
             'comment_form': comment_form,
+            'following_post_list': following_post_list,
         })
+    
+    
 
 @login_required
 def post_new(request):

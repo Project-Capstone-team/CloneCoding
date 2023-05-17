@@ -3,7 +3,6 @@ from django.conf import settings
 from imagekit.models import ProcessedImageField
 from imagekit.processors import ResizeToFill
 
-
 def user_path(instance, filename):
     from random import choice
     import string
@@ -40,3 +39,20 @@ class Profile(models.Model):
 
     def __str__(self):
         return self.nickname
+    
+class Follow(models.Model):
+    from_user = models.ForeignKey(Profile,
+                                  related_name='follow_user',
+                                  on_delete=models.CASCADE)
+    to_user = models.ForeignKey(Profile,
+                                related_name='follower_user',
+                                on_delete=models.CASCADE)
+    created_at = models.DateTimeField(auto_now_add=True) # 관계가 언제 생겼는지 작성
+    
+    def __str__(self):  # 인스턴스 추적 양식 지정
+        return "{} -> {}".format(self.from_user, self.to_user)
+    
+    class Meta:
+        unique_together = (
+            ('from_user', 'to_user') # 유니크한 관계 형성
+        )
